@@ -47,12 +47,6 @@ command -v thunderbird >/dev/null 2>&1 \
     || { echo "Fehler: 'thunderbird' nicht im PATH gefunden." >&2; exit 1; }
 command -v envsubst >/dev/null 2>&1 \
     || { echo "Fehler: 'envsubst' nicht im PATH gefunden. macOS: brew install gettext && brew link gettext" >&2; exit 1; }
-command -v xxd >/dev/null 2>&1 \
-    || { echo "Fehler: 'xxd' nicht im PATH gefunden." >&2; exit 1; }
-
-url_encode() {
-    printf '%s' "$1" | xxd -p | tr -d '\n' | sed 's/\(.\{2\}\)/%\1/g'
-}
 
 SUBJECT_TEMPLATE=$(head -n1 "$TEMPLATE" | tr -d '\r')
 BODY_TEMPLATE=$(tail -n+3 "$TEMPLATE" | tr -d '\r')
