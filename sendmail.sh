@@ -43,8 +43,15 @@ done
 [[ -f "$CSV" ]]      || { echo "Fehler: CSV-Datei nicht gefunden: $CSV" >&2; exit 1; }
 [[ -f "$TEMPLATE" ]] || { echo "Fehler: Template-Datei nicht gefunden: $TEMPLATE" >&2; exit 1; }
 
+if ! command -v thunderbird >/dev/null 2>&1 ; then
+  echo "Warnung: 'thunderbird' ist nicht im Pfad. Suche in bekannten Standardverzeichnisses"
+  if [[ -e /Applications/Thunderbird.app/Contents/MacOS/ ]]; then
+    PATH=/Applications/Thunderbird.app/Contents/MacOS/:$PATH
+  fi
+fi
+
 command -v thunderbird >/dev/null 2>&1 \
-    || { echo "Fehler: 'thunderbird' nicht im PATH gefunden." >&2; exit 1; }
+    || { echo "Fehler: 'thunderbird' nicht im PATH und in bekannten Standardverzeichnissen gefunden." >&2; exit 1; }
 command -v envsubst >/dev/null 2>&1 \
     || { echo "Fehler: 'envsubst' nicht im PATH gefunden. macOS: brew install gettext && brew link gettext" >&2; exit 1; }
 
