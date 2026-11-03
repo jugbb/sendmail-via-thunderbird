@@ -14,6 +14,10 @@
 
 set -euo pipefail
 
+function line() {
+  printf '%*s\n' "$(tput cols)" '' | tr ' ' '-'
+}
+
 usage() {
     cat <<EOF
 Verwendung: $0 --csv DATEI --template DATEI --email-column SPALTENNAME
@@ -73,6 +77,43 @@ done
     echo "Vorhandene Spalten: ${HEADERS[*]}" >&2
     exit 1
 }
+
+# In den Alternate-Screen wechseln (aktueller Inhalt wird "gesichert")
+tput smcup
+
+clear
+echo -e "\nPrüfe ob, der Betreff der Mail stimmt"
+
+line
+echo "${SUBJECT_TEMPLATE}"
+line
+
+read -p "Stimmt der Betreff? (ja/nein): " answer
+
+if [[ ${answer} != "ja" ]]; then
+  tput rmcup
+
+  echo "Korrigiere das Template"
+  exit 1;
+fi
+
+echo -e "\nPrüfe ob, der Text der Mail stimmt"
+
+line
+echo -e "${BODY_TEMPLATE}\n"
+line
+
+read -p "Stimmt der Text? (ja/nein): " answer
+
+if [[ ${answer} != "ja" ]]; then
+  tput rmcup
+
+  echo "Korrigiere das Template"
+  exit 1;
+fi
+
+tput rmcup
+
 
 ROW=0
 while IFS=',' read -ra FIELDS; do
